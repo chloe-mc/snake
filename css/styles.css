@@ -1,0 +1,25 @@
+body {
+	min-width: 440px;
+}
+
+h1 {
+	color: darkblue;
+}
+
+#grid {
+    font-size: 0;
+    width: 440px;
+    height: 440px;
+    margin: 20px auto;
+}
+
+#grid div {
+	border: .5px lightgray solid;
+	height:10px;
+	width: 10px;
+	float: left;
+}
+
+.red {
+	background-color: red;
+}
