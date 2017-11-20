@@ -1,9 +1,28 @@
 body {
 	min-width: 440px;
+	font-family: 'Calibri', sans-serif;
 }
 
 h1 {
-	color: darkblue;
+	color: white;
+	font-weight: 100;
+	font-size: 1.75em;	
+	padding: 10px;
+}
+.disabled {
+	pointer-events: none;
+}
+#header {
+	display: flex;
+	justify-content: space-between;
+	background-color: darkgreen;
+}
+
+#lnkStart {
+	padding: 15px 20px;
+	background-color: black;
+	color: white;
+	cursor: pointer;
 }
 
 #grid {
@@ -20,6 +39,14 @@ h1 {
 	float: left;
 }
 
-.red {
-	background-color: red;
+.head {
+	background-color: black;
+}
+
+.body {
+	background-color: black;
+}
+
+.food {
+	background-color: orange;
 }

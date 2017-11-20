@@ -1,134 +1,167 @@
-var grid = [], snake;
 var gridDim = 40;
+var gameInterval;
 
 $(document).ready(function(){
-	snake = {
+	$("body").keydown(function(e){
+		snake.changeDirection(e.key);
+		if (e.keyCode === 32 && $("#lnkStart").hasClass('disabled') === false) {
+			startgame();
+		}
+	});
+	$("#lnkStart").on("click", function(e){
+		startgame();
+	});
+	grid.create();
+	snake.reset();	
+});
+
+function startgame() {
+	$('#lnkStart').addClass('disabled');
+	gameInterval = setInterval(function(){ 
+		snake.move(); 
+		snake.validate();
+	}, 100);
+	grid.addfood();
+}
+
+function gameover() {
+	clearInterval(gameInterval);
+	snake.reset();
+	alert('You lost.');
+	$('#lnkStart').removeClass('disabled');
+}
+
+var snake = {
+	default: {
 		head:[20, 20],
 		direction: "r",
-		body: [[20, 18], [20, 19], [20, 20]]
-	}
-
-	$("body").keydown(function(e){
-		switch(e.key) {
+		body: [[18, 20], [19, 20]]
+	},
+	reset: function() {
+		this.body = [];
+		this.head = [];
+		this.direction = "";
+		grid.clearcolor();
+		$.extend(true, this, this.default);
+		this.draw();
+	},
+	draw: function() {
+		grid.addsomecolor(this.head[0], this.head[1], "head");
+		$.each(this.body, function(i, item) {
+			grid.addsomecolor(item[0], item[1], "body");
+		});
+	},
+	clear: function() {
+		$(".cell").removeClass("head body");
+	},
+	move: function() {
+		this.clear();
+		this.body.shift();
+		this.body.push([this.head[0], this.head[1]]);
+		switch(this.direction) {
+			case 'r':
+				this.head[0]++;
+				break;	
+			case 'l':
+				this.head[0]--;
+				break;
+			case 'u':
+				this.head[1]--;
+				break;
+			case 'd':
+				this.head[1]++;
+				break;
+		}
+		this.draw();
+	}, 
+	validate: function() {
+		this.head = grid.checksides(this.head[0], this.head[1]);
+		$.each(this.body, function(i, item){
+			item = grid.checksides(item[0], item[1]);
+		});
+		if ($('#' + this.head[0] + '-' + this.head[1]).hasClass('food')){
+			this.grow(this.head[0], this.head[1]);
+			grid.addfood();
+		}
+		if ($('#' + this.head[0] + '-' + this.head[1]).hasClass('body')){
+			gameover();
+		}
+	},
+	grow: function(x, y) {
+		this.body.push([x, y]);
+	},
+	changeDirection: function(newDir) {
+		switch(newDir) {
 			case "ArrowDown":
-				if (snake.direction !== "u") {
-					snake.direction = "d";
+				if (this.direction !== "u") {
+					this.direction = "d";
 				}				
 				break;
 			case "ArrowUp":
-				if (snake.direction !== "d") {
-					snake.direction = "u";
+				if (this.direction !== "d") {
+					this.direction = "u";
 				}
 				break;
 			case "ArrowRight":
-				if (snake.direction !== "l") {
-					snake.direction = "r";
+				if (this.direction !== "l") {
+					this.direction = "r";
 				}
 				break;
 			case "ArrowLeft":
-				if (snake.direction !== "r") {
-					snake.direction = "l";
+				if (this.direction !== "r") {
+					this.direction = "l";
 				}
 				break;
 		}
-	});
+	}
+};
 
-	gogogadgetgrid();
-	render();
-	drawsnake();	
-	startgame();	
-});
 
-function drawsnake() {
-	addsomecolor(snake.head[0], snake.head[1]);
-	$.each(snake.body, function(i, item) {
-		addsomecolor(item[0], item[1]);
-	});
-}
-
-function clearsnake() {
-	$(".cell").removeClass("red");
-}
-
-function gogogadgetgrid() {	
-	for (var i1 = 0; i1 < gridDim; i1++) {
-		var row = [];
-		for (var i2 = 0; i2 < gridDim; i2++){
-			row.push(" ");
+var grid = {
+	gridDim: gridDim,
+	clear: function() {
+		$("#grid").html('');
+	},
+	create: function() {	
+		grid.clear();
+		for (var i1 = 0; i1 < this.gridDim; i1++) {
+			for (var i2 = 0; i2 < this.gridDim; i2++) {
+				$("#grid").append('<div class="cell" id="' + i2 + '-' + i1 + '"> </div>');
+			}
+			$("#grid").append("</br>");
 		}
-		grid.push(row);
+	},
+	checksides: function(x, y) {
+		if (y > this.gridDim - 1) {
+			y = 0;
+		} 
+		if (y < 0) {
+			y = this.gridDim - 1;
+		}
+		if (x > this.gridDim - 1) {
+			x = 0;
+		}
+		if (x < 0) {
+			x = this.gridDim - 1;
+		}
+		return [x, y];
+	},
+	addsomecolor: function(x, y, className) {
+		$('#' + x + '-' + y).addClass(className);
+	},
+	clearcolor: function(x, y) {
+		$('.cell').removeClass('head body food');
+	}, 
+	addfood: function() {
+		$(".cell").removeClass("food");
+		var x = Math.floor(Math.random() * grid.gridDim);
+		var y = Math.floor(Math.random() * grid.gridDim);
+		$('#' + x + '-' + y).addClass('food');
 	}
-}
+};
 
-function render() {
-	cleargrid();
-	$.each(grid, function(i1, row){
-		$.each(row, function (i2, cell){
-			$("#grid").append('<div class="cell" id="' + i1 + '-' + i2 + '">' + grid[i1][i2] + "</div>");
-		});
-		$("#grid").append("</br>");
-	});
-}
 
-function cleargrid() {
-	$("#grid").html('');
-}
 
-function startgame() {
-	setInterval(function(){ 
-		move(); 
-		validate();
-	}, 300);
-}
 
-function move() {
-	clearsnake();
-	switch(snake.direction) {
-		case 'r':
-			snake.head[1]++;
-			break;	
-		case 'l':
-			snake.head[1]--;
-			break;
-		case 'u':
-			snake.head[0]--;
-			break;
-		case 'd':
-			snake.head[0]++;
-			break;
-	}
-	snake.body.shift();
-	snake.body.push([snake.head[0], snake.head[1]]);
-	drawsnake();
-}
 
-function validate() {
-	snake.head = checksides(snake.head[0], snake.head[1]);
-	$.each(snake.body, function(i, item){
-		snake.body[i] = checksides(item[0], item[1]);
-	});
-}
 
-function checksides(x, y) {
-	if (y > gridDim - 1) {
-		y = 0;
-	} 
-	if (y < 0) {
-		y = gridDim - 1;
-	}
-	if (x > gridDim - 1) {
-		x = 0;
-	}
-	if (x < 0) {
-		x = gridDim - 1;
-	}
-	return [x, y];
-}
-
-function addsomecolor(x, y) {
-	$('#' + x + '-' + y).addClass('red');
-}
-
-function notsomuchcolor(x, y) {
-	$('#' + x + '-' + y).removeClass('red');
-}
