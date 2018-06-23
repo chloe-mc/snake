@@ -36,7 +36,7 @@ var game = {
 
 
 var grid = {
-	gridDim: 30,
+	gridDim: 20,
 	clear: function() {
 		$("#grid").html('');
 	},

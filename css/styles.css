@@ -1,39 +1,39 @@
-body { 
-	min-width: 440px; 
+body {
+	min-width: 440px;
 	font-family: 'Calibri', sans-serif;
 }
-h1 { 
-	color: white; 
-	font-weight: 100; 
-	font-size: 1.75em;  
+h1 {
+	color: white;
+	font-weight: 100;
+	font-size: 1.75em;
 	padding: 10px;
 }
-.disabled { 
+.disabled {
 	pointer-events: none;
 }
-#header { 
-	display: flex; 
-	justify-content: space-between; 
+#header {
+	display: flex;
+	justify-content: space-between;
 	background-color: darkgreen;
 }
-#lnkStart { 
-	padding: 15px 20px; 
-	background-color: black; 
-	color: white; 
+#lnkStart {
+	padding: 15px 20px;
+	background-color: black;
+	color: white;
 	cursor: pointer;
 }
-#grid {    
-	font-size: 0;    
-	margin: 20px;    
+#grid {
+	font-size: 0;
+	margin: 20px;
 	text-align: center;
 }
-#grid div { 
-	border: .5px lightgray solid; 
-	height:15px; 
-	width: 15px; 
+#grid div {
+	border: .5px lightgray solid;
+	height:15px;
+	width: 15px;
 	display: inline-block;
 }
-.head, .body { 
+.head, .body {
 	background-color: black;
 }
 .food {
